@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Categorie, Article
+from .models import Categorie, Article, Contact
 
 
 class ArticleAdmin(admin.ModelAdmin):
@@ -43,4 +43,5 @@ class ArticleAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Categorie)
+admin.site.register(Contact)
 admin.site.register(Article, ArticleAdmin)

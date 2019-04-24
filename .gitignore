@@ -1,0 +1,4 @@
+.idea
+lib/python*
+*.py[co]
+__pycache__

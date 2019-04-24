@@ -2,8 +2,8 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from datetime import datetime
 
-from .models import Article
-
+from .models import Article, Contact
+from .forms import NouveauContactForm
 
 def accueil(request):
     """ Afficher tous les articles de notre blog """
@@ -50,3 +50,29 @@ def addition(request, nombre1, nombre2):
 
     # Retourne nombre1, nombre2 et la somme des deux au tpl
     return render(request, 'addition.html', locals())
+
+
+def nouveau_contact(request):
+    sauvegarde = False
+    form = NouveauContactForm(request.POST or None, request.FILES)
+    if form.is_valid():
+        contact = Contact()
+        contact.nom = form.cleaned_data["nom"]
+        contact.adresse = form.cleaned_data["adresse"]
+        contact.photo = form.cleaned_data["photo"]
+        contact.save()
+        sauvegarde = True
+
+    return render(request, 'contact.html', {
+        'form': form,
+        'sauvegarde': sauvegarde
+    })
+
+
+def voir_contacts(request):
+    return render(
+        request,
+        'voir_contacts.html',
+        {'contacts': Contact.objects.all()}
+    )
+

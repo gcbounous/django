@@ -1,0 +1,5 @@
+{% for u in urls %}
+    <span>{{ u.url_longue }} <strong>{{ u.nombre_acces }}</strong></span><br>
+{% empty %}
+    <p>Aucune url.</p>
+{% endfor %}

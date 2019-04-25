@@ -5,37 +5,24 @@ from .models import MiniURL
 
 
 def nouvelle_url(request):
-    sauvegarde = False
-    form = NouvelleURLForm(request.POST or None)
-    if form.is_valid():
-        mini_url = MiniURL()
-        mini_url.url_longue = form.cleaned_data["url"]
-        mini_url.pseudo_createur = form.cleaned_data["pseudo"]
-        mini_url.code = generer(15)
-        mini_url.save()
-        sauvegarde = True
+    if request.method == "POST":
+        form = NouvelleURLForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(voir_urls)
+    else:
+        form = NouvelleURLForm()
 
-    return render(request, "url.html", {'form': form, 'sauvegarde': sauvegarde})
+    return render(request, "url.html", {'form': form})
 
 
 def voir_urls(request):
-    urls = MiniURL.objects.all().order_by('-nombre_acces')
-    return render(request, "list_urls.html", {'urls': urls})
+    urls = MiniURL.objects.order_by('-nb_acces')
+    return render(request, "list_urls.html", locals())
 
 
 def redirect_url(request, code):
     mini_url = get_object_or_404(MiniURL, code=code)
-    mini_url.nombre_acces += 1
+    mini_url.nb_acces += 1
     mini_url.save()
-    return redirect(mini_url.url_longue)
-
-
-import random
-import string
-
-
-def generer(nb_caracteres):
-    caracteres = string.ascii_letters + string.digits
-    aleatoire = [random.choice(caracteres) for _ in range(nb_caracteres)]
-
-    return ''.join(aleatoire)
+    return redirect(mini_url.url)

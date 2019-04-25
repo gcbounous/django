@@ -4,11 +4,11 @@ from .models import MiniURL
 
 
 class MiniURLAdmin(admin.ModelAdmin):
-    list_display = ('url_longue', 'code')
-    list_filter = ('url_longue',)
-    date_hierarchy = 'date_creation'
-    ordering = ('date_creation',)
-    search_field = ('url_longue',)
+    list_display = ('url', 'code', 'date', 'pseudo', 'nb_acces')
+    list_filter = ('url',)
+    date_hierarchy = 'date'
+    ordering = ('date',)
+    search_field = ('url',)
 
 
 admin.site.register(MiniURL, MiniURLAdmin)

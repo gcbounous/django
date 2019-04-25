@@ -1,6 +1,8 @@
 from django import forms
+from .models import MiniURL
 
 
-class NouvelleURLForm(forms.Form):
-    url = forms.CharField()
-    pseudo = forms.CharField()
+class NouvelleURLForm(forms.ModelForm):
+    class Meta:
+        model = MiniURL
+        fields = ('url', 'pseudo')

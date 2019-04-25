@@ -6,7 +6,7 @@ urlpatterns = [
     path(r'', views.accueil, name='accueil'),
     path(r'article/<int:id>-<slug:slug>', views.lire, name='lire'),
     # path(r'^articles/(?P<tag>.+)', views.view_article_by_tag),
-    path(r'articles/(?P<year>\d{4}/(?P<month>[01]?\d)', views.list_articles),
+    path(r'articles/(?P<year>\d{4})/(?P<month>[01]?\d)', views.list_articles),
     path('redirection', views.view_redirection),
 
     path('contact/', views.nouveau_contact, name='contact'),

@@ -1,5 +1,5 @@
 .idea
-lib/
-*.py[co]
-__pycache__/
-share/
+tmp
+*.pyc
+__pycache__
+

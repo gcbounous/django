@@ -1,5 +1,0 @@
-{% for u in urls %}
-<span>{{ u.url }} -> <a href="{% url 'redirect_url' code=u.code %}"> {{request.get_host}}{% url 'redirect_url' code=u.code %}</a> : <strong>{{ u.nb_acces }}</strong></span><br>
-{% empty %}
-    <p>Aucune url.</p>
-{% endfor %}

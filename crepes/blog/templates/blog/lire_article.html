@@ -18,9 +18,9 @@
 	<h3 class="titre-comments">Commentaires</h3>
 
 	<h4>Poster votre propre commentaire</h4>
-	<form method="post" action="" class="pure-form">
-
-		<!-- A vous de remplir le formulaire également -->
+		<form method="post" enctype="multipart/form-data" action="." class="pure-form">
+		   {% csrf_token %}
+		   {{ comment_form.as_p }}
 
 		<p style="text-align:center">
 			<input class="pure-button pure-button-primary" type="submit" />
@@ -29,10 +29,11 @@
 
 	<div class="clear"></div>
 
-	
-	<div class="commentaire">
-		<p>Maxime, le 28 mai 2019</p>
-		<p>Ceci est un exemple de commentaire, qui est à remplacer par votre modèle</p>
-	</div>
+	{% for commentaire in commentaires %}
+		<div class="commentaire" style="margin-top:35px;">
+			<p><strong>{{ commentaire.pseudo }}</strong>, {{ commentaire.date_creation|date:"d-m-Y H:i"}}</p>
+			<p><i> {{ commentaire.contenu }} </i></p>
+		</div>
+	{% endfor %}
 
 {% endblock %}

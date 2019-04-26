@@ -11,5 +11,11 @@ class ArticleAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('titre', )}
 
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('pseudo', 'email', 'date_creation', 'is_visible', )
+    search_fields = ('pseudo', 'email', )
+
+
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Categorie)
+admin.site.register(Comment, CommentAdmin)

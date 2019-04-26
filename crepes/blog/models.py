@@ -6,7 +6,7 @@ class Article(models.Model):
     auteur = models.CharField(max_length=40)
     contenu = models.TextField(null=True)
     date = models.DateTimeField(verbose_name="Date de parution", auto_now_add=True, auto_now=False)
-    is_visible = models.BooleanField(verbose_name="Article publié ?", default=False)
+    is_visible = models.BooleanField(verbose_name="Visible", default=False)
     categorie = models.ForeignKey('Categorie', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
@@ -28,3 +28,16 @@ class Categorie(models.Model):
 
 class Comment(models.Model):
     """ Modèle pour les commentaires. A vous de l'écrire ! """
+    pseudo = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
+    contenu = models.CharField(max_length=500)
+    is_visible = models.BooleanField(verbose_name="Visible", default=True)
+    date_creation = models.DateTimeField(auto_now_add=True)
+    article = models.ForeignKey('Article', on_delete=models.CASCADE, related_name='commentaires')
+
+    def __str__(self):
+        return self.contenu
+
+    class Meta:
+        ordering = ['-date_creation']
+

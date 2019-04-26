@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
+from blog.forms import CommentForm
 from .models import Article
 
 
@@ -21,5 +22,20 @@ def lire_article(request, slug):
     fourni en paramètre
     """
     article = get_object_or_404(Article, slug=slug)
+    commentaires = article.commentaires.filter(is_visible=True)
 
-    return render(request, 'blog/lire_article.html', {'article': article})
+    if request.method == "POST":
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment_form.save()
+            return redirect(lire_article, slug=slug)
+    else:
+        comment_form = CommentForm()
+
+    return render(request, 'blog/lire_article.html',
+                  {
+                      'article': article,
+                      "commentaires": commentaires,
+                      "comment_form": comment_form
+                  }
+                  )

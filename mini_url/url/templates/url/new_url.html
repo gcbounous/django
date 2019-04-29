@@ -4,7 +4,7 @@
 <p>Cette <strong>url</strong> bien été enregistré.</p>
 {% endif %}
 
-<form method="post" enctype="multipart/form-data" action=".">
+<form method="post" action="">
    {% csrf_token %}
    {{ form.as_p }}
    <input type="submit"/>

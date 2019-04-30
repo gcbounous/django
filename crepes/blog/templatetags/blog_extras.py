@@ -1,10 +1,65 @@
 from django import template
+from django.template import VariableDoesNotExist
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
+from random import randint
 
 register = template.Library()
 
+# --- TAG RANDOM ---
+@register.tag
+def random(parser, token):
+    """ Tag générant un nombre aléatoire, entre les bornes en arguments """
+    try:
+        nom_tag, begin, end = token.split_contents()
+    except ValueError:
+        msg = 'Le tag random doit prendre exactement deux arguments.'
+        raise template.TemplateSyntaxError(msg)
 
+    return RandomNode(begin, end)
+
+
+class RandomNode(template.Node):
+    def __init__(self, begin, end):
+        self.begin = begin
+        self.end = end
+
+    def render(self, context):
+        not_exist = False
+
+        try:
+            begin = template.Variable(self.begin).resolve(context)
+            self.begin = int(begin)
+        except (VariableDoesNotExist, ValueError):
+            not_exist = self.begin
+        try:
+            end = template.Variable(self.end).resolve(context)
+            self.end = int(end)
+        except (VariableDoesNotExist, ValueError):
+            not_exist = self.end
+
+        if not_exist:
+            msg = 'L\'argument "%s" n\'existe pas, ou n\'est pas un entier.' % not_exist
+            raise template.TemplateSyntaxError(msg)
+
+        # Nous vérifions si le premier entier est bien inférieur au second
+        if self.begin > self.end:
+            msg = 'L\'argument "begin" doit obligatoirement être inférieur à l\'argument "end" dans le tag random.'
+            raise template.TemplateSyntaxError(msg)
+
+        return str(randint(self.begin, self.end))
+
+
+#  --- SIMPLE TAG RANDOM (fonctionne comme celle ci dessus mais en plus simple) ---
+@register.simple_tag(name='random')  # L'argument name est encore une fois facultatif
+def random(begin, end):
+    try:
+       return randint(int(begin), int(end))
+    except ValueError:
+       raise template.TemplateSyntaxError('Les arguments doivent nécessairement être des entiers')
+
+
+# --- FILTRES ---
 @register.filter(is_safe=True)
 def citation(text):
     """

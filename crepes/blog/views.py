@@ -20,6 +20,11 @@ class ListeArticles(ListView):
         context = super(ListeArticles, self).get_context_data(**kwargs)
         # Nous ajoutons la liste des catégories, sans filtre particulier
         context['categories'] = Categorie.objects.all()
+
+        # utiliser tag random avec des variables
+        context['begin'] = 15
+        context['end'] = 25
+
         return context
 
 

@@ -1,5 +1,7 @@
 {% extends "blog/base.html" %}
+
 {% load blog_extras %}
+{% load cache %}
 
 {% block title %}Accueil du blog{% endblock %}
 
@@ -8,14 +10,16 @@
 
 	<h1>Derniers articles</h1>
 
-	{% for article in derniers_articles %}
-		<h2 class="titre-article">{{ article.titre | citation }}</h2>
-		<p class="infos-article">Le {{ article.date|date:'SHORT_DATETIME_FORMAT' }}, XX commentaires.</p>
-		<div class="contenu-article">{{ article.contenu|safe|smart_truncate:30 }}</div>
-		<p><a href="{% url 'blog_id_lire' article.id %}">Lire la suite (id)</a></p>
-		<p><a href="{% url 'blog_slug_lire' article.slug %}">Lire la suite (slug)</a></p>
-		<hr />
-	{% endfor %}
+    {% cache 500 accuiel %}
+        {% for article in derniers_articles %}
+            <h2 class="titre-article">{{ article.titre | citation }}</h2>
+            <p class="infos-article">Le {{ article.date|date:'SHORT_DATETIME_FORMAT' }}, XX commentaires.</p>
+            <div class="contenu-article">{{ article.contenu|safe|smart_truncate:30 }}</div>
+            <p><a href="{% url 'blog_id_lire' article.id %}">Lire la suite (id)</a></p>
+            <p><a href="{% url 'blog_slug_lire' article.slug %}">Lire la suite (slug)</a></p>
+            <hr />
+        {% endfor %}
+    {% endcache %}
 
     {# Mise en forme de la pagination ici #}
     {% if is_paginated %}

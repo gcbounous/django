@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, DetailView
 
 from blog.forms import CommentForm
@@ -64,6 +65,7 @@ def accueil(request):
     return render(request, 'blog/accueil.html', {'derniers_articles': articles, 'categories': categories})
 
 
+@cache_page(60 * 15) # durée en s, donc = 15min
 def lire_article(request, slug):
     """
     Affiche un article complet, sélectionné en fonction du slug
@@ -81,9 +83,9 @@ def lire_article(request, slug):
         comment_form = CommentForm()
 
     return render(request, 'blog/lire_article.html',
-                  {
-                      'article': article,
-                      "commentaires": commentaires,
-                      "comment_form": comment_form
-                  }
+                      {
+                          'article': article,
+                          "commentaires": commentaires,
+                          "comment_form": comment_form
+                      }
                   )

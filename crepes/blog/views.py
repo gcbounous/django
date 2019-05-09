@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, DetailView
 
 from blog.forms import CommentForm
@@ -59,6 +60,11 @@ class ListeArticles(ListView):
         context = super(ListeArticles, self).get_context_data(**kwargs)
         # Nous ajoutons la liste des catégories, sans filtre particulier
         context['categories'] = Categorie.objects.all()
+
+        # utiliser tag random avec des variables
+        context['begin'] = 15
+        context['end'] = 25
+
         return context
 
 
@@ -83,3 +89,42 @@ class LireArticle(DetailView):
         article.save()
         return article  # Et nous retournons l'objet à afficher
 
+
+def accueil(request):
+    """
+    Affiche les 5 derniers articles du blog. Nous n'avons pas encore
+    vu comment faire de la pagination, donc on ne donne pas la
+    possibilité de lire les articles plus vieux via l'accueil pour
+    le moment.
+
+    # url(r'^$', views.accueil, name='accueil'),
+    """
+    articles = Article.objects.filter(is_visible=True).order_by('-date')[:4]
+    categories = Categorie.objects.all()
+    return render(request, 'blog/accueil.html', {'derniers_articles': articles, 'categories': categories})
+
+
+@cache_page(60 * 15) # durée en s, donc = 15min
+def lire_article(request, slug):
+    """
+    Affiche un article complet, sélectionné en fonction du slug
+    fourni en paramètre
+    """
+    article = get_object_or_404(Article, slug=slug)
+    commentaires = article.commentaires.filter(is_visible=True)
+
+    if request.method == "POST":
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment_form.save()
+            return redirect(lire_article, slug=slug)
+    else:
+        comment_form = CommentForm()
+
+    return render(request, 'blog/lire_article.html',
+                      {
+                          'article': article,
+                          "commentaires": commentaires,
+                          "comment_form": comment_form
+                      }
+                  )

@@ -10,8 +10,22 @@
         <a href="{% url "delete_url" mini.code %}">Supprimer</a>
         | {{ mini.url }} via <a href="http://{{ request.get_host }}{% url "redirect_url" mini.code %}">{{ request.get_host }}{% url "redirect_url" mini.code %}</a>
         {% if mini.pseudo %}par {{ mini.pseudo }}{% endif %} ({{ mini.nb_acces }} accès)</li>
-    
+
     {% empty %}
     <li>Il n'y en a pas actuellement.</li>
     {% endfor %}
 </ul>
+
+<div class="pagination">
+    {% if urls.has_previous %}
+        <a href="{% url 'list_urls' urls.previous_page_number %}">Précédente</a> -
+    {% endif %}
+
+    <span class="current">
+        Page {{ urls.number }} sur {{ urls.paginator.numpages }}
+    </span>
+
+    {% if urls.has_next %}
+       - <a href="{% url 'list_urls' urls.next_page_number %}">Suivante</a>
+    {% endif %}
+</div>

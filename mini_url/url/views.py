@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator, EmptyPage
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, UpdateView, DeleteView
@@ -22,8 +23,16 @@ def nouvelle_url(request):
     return render(request, "url/new_url.html", {'form': form})
 
 
-def voir_urls(request):
+def voir_urls(request, page=1):
+    """ afficher les redirections"""
     urls = MiniURL.objects.order_by('-nb_acces')
+    paginator = Paginator(urls, 5)  # 5 liens par page
+
+    try:
+        urls = paginator.page(page)
+    except EmptyPage:
+        urls = paginator.page(paginator.num_pages)
+
     return render(request, "url/list_urls.html", locals())
 
 

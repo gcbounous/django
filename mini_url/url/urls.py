@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^url/supprimer/(?P<code>\w{6})$', views.URLDelete.as_view(), name='delete_url'),
     url(r'^url/(?P<code>\w{6})/', views.redirect_url, name='redirect_url'),
     url(r'urls/', views.voir_urls, name='urls'),
+    url(r'urls/\?page=(P<page>\d+)$', views.voir_urls, name='urls'),
 ]

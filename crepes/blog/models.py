@@ -1,4 +1,6 @@
 from django.db import models
+from datetime import datetime
+
 
 class Article(models.Model):
     titre = models.CharField(max_length=100)
@@ -8,6 +10,12 @@ class Article(models.Model):
     date = models.DateTimeField(verbose_name="Date de parution", auto_now_add=True, auto_now=False)
     is_visible = models.BooleanField(verbose_name="Visible", default=False)
     categorie = models.ForeignKey('Categorie', on_delete=models.CASCADE, null=True)
+
+    def est_recent(self):
+        """
+        :return: True si l'aticle a été publié dans les 30 dernier jours
+        """
+        return self.date < datetime.now() and (datetime.now() - self.date).days < 30
 
     def __str__(self):
         return self.titre

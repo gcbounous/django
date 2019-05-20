@@ -15,13 +15,14 @@ class MiniURL(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk is None:
-            self.generer(6)
+            self.code = self.generer(6)
         super(MiniURL, self).save(*args, **kwargs)
 
-    def generer(self, nb_caracteres):
+    @staticmethod
+    def generer(nb_caracteres):
         caracteres = string.ascii_letters + string.digits
         aleatoire = [random.choice(caracteres) for _ in range(nb_caracteres)]
-        self.code = ''.join(aleatoire)
+        return ''.join(aleatoire)
 
     class Meta:
         verbose_name = "Mini URL"
